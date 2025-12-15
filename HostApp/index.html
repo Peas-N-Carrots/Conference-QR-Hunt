@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Host Conference QR Scavenger Hunt</title>
+    <!-- <link rel="stylesheet" href="style.css" /> -->
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <h1 id="Conference QR Scavenger Hunt Game Maker">Host a Game</h1>
+    </header>
+
+    <main>
+
+        <!-- Game name input -->
+        <section id="game-name-section">
+            <label for="game-name-input">Game Name</label>
+            <input
+                id="game-name-input"
+                type="text"
+                placeholder="Enter game name"
+            />
+        </section>
+
+        <!-- QR code area -->
+        <section id="qr-section">
+            <p id="qr-placeholder">
+                Add at least one question to generate a QR code.
+            </p>
+            <div id="qr-container" hidden></div>
+        </section>
+
+        <!-- Question list controls -->
+        <section id="questions-section">
+
+            <h2>Questions</h2>
+
+            <!-- Add question -->
+            <div id="add-question">
+                <input
+                    id="question-input"
+                    type="text"
+                    placeholder="Enter y/n question (max 20 words)"
+                />
+                <button id="add-question-btn">Add</button>
+            </div>
+
+            <!-- Question list -->
+            <ul id="question-list">
+            </ul>
+
+        </section>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
