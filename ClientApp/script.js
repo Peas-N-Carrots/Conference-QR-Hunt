@@ -74,6 +74,14 @@ class clientGame {
         return this.#qAnswers.get(question) || false;
     }
 
+    getFound(question) {
+        return this.#qFound.get(question) || null;
+    }
+
+    isComplete() {
+        return this.#qList.every(question => this.#qFound.has(question));
+    }
+
     #unhashState() {
         try {
             const hashString = window.location.hash.slice(1);
@@ -174,11 +182,65 @@ const completionTimestamp = document.getElementById("completion-timestamp");
 function render() {
     personalPage.hidden = !profilePage;
     listPage.hidden = profilePage;
-    completionState.hidden = !isComplete;
+    completionState.hidden = !client.isComplete();
 
-    if (isComplete) {
+    if (client.isComplete()) {
         completionTimestamp.textContent = `Completed at: ${new Date().toLocaleString()}`;
     }
+
+    // Render Profile tab
+    const questionList = document.getElementById("question-list");
+    questionList.innerHTML = "";
+    client.getQuestions().forEach(question => {
+        const li = document.createElement("li");
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = client.getAnswer(question);
+        checkbox.addEventListener("change", () => {
+            if (checkbox.checked) {
+                client.setAnswer(question);
+            } else {
+                client.unsetAnswer(question);
+            }
+            render();
+        });
+        const label = document.createElement("label");
+        label.textContent = question;
+        li.appendChild(checkbox);
+        li.appendChild(label);
+        questionList.appendChild(li);
+    });
+
+    // Render Hunt tab
+    const checkList = document.getElementById("check-list");
+    checkList.innerHTML = "";
+    client.getQuestions().forEach(question => {
+        const li = document.createElement("li");
+        const status = document.createElement("span");
+        const found = client.getFound(question);
+        status.textContent = found ? "✓" : "○";
+        li.appendChild(status);
+        const text = document.createTextNode(` ${question} `);
+        li.appendChild(text);
+        if (!found) {
+            const scanButton = document.createElement("button");
+            scanButton.textContent = "Scan";
+            scanButton.addEventListener("click", () => {
+                scanner.render((decodedText) => {
+                    const payload = JSON.parse(LZString.decompressFromEncodedURIComponent(decodedText));
+                    const result = client.validateScan(payload, question);
+                    if (result.success) {
+                        alert("Scan successful!");
+                    } else {
+                        alert(`Scan failed: ${result.error}`);
+                    }
+                    render();
+                });
+            });
+            li.appendChild(scanButton);
+        }
+        checkList.appendChild(li);
+    });
 }
 
 personalButton.addEventListener("click", () => {
