@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Client Hash</title>
+    <script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"></script>
+</head>
+<body>
+    <h1>Test Client Hash</h1>
+    <div id="results"></div>
+    <script>
+        function testClientHash() {
+            const results = [];
+
+            // Test 1: Round-trip encoding/decoding
+            const state = {
+                host: false,
+                gName: "Test Game",
+                gameId: "12345",
+                qList: ["Question 1", "Question 2"],
+                pName: "Player 1",
+                pId: "abcde",
+                qAnswers: [["Question 1", true], ["Question 2", false]],
+                qFound: [["Question 1", "player2"]],
+                pUsed: ["player2"]
+            };
+            const hash = LZString.compressToEncodedURIComponent(JSON.stringify(state));
+            const decoded = JSON.parse(LZString.decompressFromEncodedURIComponent(hash));
+            results.push(JSON.stringify(state) === JSON.stringify(decoded) ? "PASS" : "FAIL");
+
+            // Test 2: pId persists across round-trip
+            results.push(state.pId === decoded.pId ? "PASS" : "FAIL");
+
+            // Test 3: Edge case - empty name and question list
+            const emptyState = {
+                host: false,
+                gName: "",
+                gameId: "",
+                qList: [],
+                pName: "",
+                pId: "xyz",
+                qAnswers: [],
+                qFound: [],
+                pUsed: []
+            };
+            const emptyHash = LZString.compressToEncodedURIComponent(JSON.stringify(emptyState));
+            const emptyDecoded = JSON.parse(LZString.decompressFromEncodedURIComponent(emptyHash));
+            results.push(JSON.stringify(emptyState) === JSON.stringify(emptyDecoded) ? "PASS" : "FAIL");
+
+            document.getElementById("results").innerHTML = results.map((r, i) => `Test ${i + 1}: ${r}`).join("<br>");
+        }
+
+        testClientHash();
+    </script>
+</body>
+</html>

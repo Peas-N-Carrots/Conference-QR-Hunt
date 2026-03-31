@@ -84,6 +84,21 @@ class hostGame {
     }
 
     /**
+     * Helper method to generate a client game URL to put in the QR code
+     */
+    #hashQR() {
+        const baseURL = "https://peas-n-carrots.github.io/Conference-QR-Hunt/ClientApp/#";
+        const jsonString = JSON.stringify({
+            host: true,
+            title: this.#gName,
+            list: this.#qList,
+            gameId: computeGameId(this.#gName + JSON.stringify(this.#qList))
+        });
+        const hashString = LZString.compressToEncodedURIComponent(jsonString);
+        return baseURL + hashString;
+    }
+
+    /**
      * Helper method to decode the hash string and unpack its state
      */
     #unhashState() {
@@ -93,6 +108,7 @@ class hostGame {
             const obj = JSON.parse(jsonString);
             this.#gName = obj.title;
             this.#qList = obj.list;
+            if (!obj.host) throw new Error();
             return { success: true };
         } catch (e) {
             this.#gName = "";
@@ -105,7 +121,7 @@ class hostGame {
      * method to generate the QR code
      */
     genQR(container) {
-        const url = window.location.hash;
+        const url = this.#hashQR();
         container.innerHTML = "";
 
         const size = Math.min(
@@ -239,3 +255,16 @@ backBtn.addEventListener("click", () => {
 
 // initial render
 render();
+
+/**
+ * Helper function to compute a deterministic hash using djb2 algorithm
+ * @param {string} str - The input string to hash
+ * @returns {string} - The resulting hash as a string
+ */
+function computeGameId(str) {
+    let hash = 5381;
+    for (let i = 0; i < str.length; i++) {
+        hash = (hash * 33) ^ str.charCodeAt(i);
+    }
+    return hash >>> 0; // Ensure unsigned 32-bit integer
+}

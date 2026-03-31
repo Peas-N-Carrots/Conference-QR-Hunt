@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Scan Validation</title>
+    <script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"></script>
+</head>
+<body>
+    <h1>Test Scan Validation</h1>
+    <div id="results"></div>
+    <script>
+        function testScanValidation() {
+            const results = [];
+
+            const clientState = {
+                gameId: "12345",
+                pUsed: new Set(),
+                qFound: new Map()
+            };
+
+            function validateScan(payload, question) {
+                if (payload.gameId !== clientState.gameId) {
+                    return { success: false, error: "Wrong game" };
+                }
+                if (clientState.pUsed.has(payload.pId)) {
+                    return { success: false, error: "Player already used" };
+                }
+                if (!payload.yesQuestions.includes(question)) {
+                    return { success: false, error: "Player did not answer yes to this question" };
+                }
+                clientState.qFound.set(question, payload.pId);
+                clientState.pUsed.add(payload.pId);
+                return { success: true };
+            }
+
+            // Test 1: Valid scan
+            const payload1 = {
+                gameId: "12345",
+                pId: "player1",
+                yesQuestions: ["Question 1"]
+            };
+            const result1 = validateScan(payload1, "Question 1");
+            results.push(result1.success ? "PASS" : "FAIL");
+
+            // Test 2: Wrong gameId
+            const payload2 = {
+                gameId: "54321",
+                pId: "player2",
+                yesQuestions: ["Question 1"]
+            };
+            const result2 = validateScan(payload2, "Question 1");
+            results.push(!result2.success && result2.error === "Wrong game" ? "PASS" : "FAIL");
+
+            // Test 3: Player already used
+            const payload3 = {
+                gameId: "12345",
+                pId: "player1",
+                yesQuestions: ["Question 1"]
+            };
+            const result3 = validateScan(payload3, "Question 2");
+            results.push(!result3.success && result3.error === "Player already used" ? "PASS" : "FAIL");
+
+            // Test 4: Player did not answer yes to question
+            const payload4 = {
+                gameId: "12345",
+                pId: "player3",
+                yesQuestions: ["Question 2"]
+            };
+            const result4 = validateScan(payload4, "Question 1");
+            results.push(!result4.success && result4.error === "Player did not answer yes to this question" ? "PASS" : "FAIL");
+
+            document.getElementById("results").innerHTML = results.map((r, i) => `Test ${i + 1}: ${r}`).join("<br>");
+        }
+
+        testScanValidation();
+    </script>
+</body>
+</html>

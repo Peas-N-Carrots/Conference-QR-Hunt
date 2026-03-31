@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test QR Payload</title>
+    <script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"></script>
+</head>
+<body>
+    <h1>Test QR Payload</h1>
+    <div id="results"></div>
+    <script>
+        function testQrPayload() {
+            const results = [];
+
+            const clientState = {
+                gameId: "12345",
+                pName: "Player 1",
+                pId: "abcde",
+                qAnswers: new Map([
+                    ["Question 1", true],
+                    ["Question 2", false]
+                ])
+            };
+
+            function generateQrPayload() {
+                return {
+                    gameId: clientState.gameId,
+                    pName: clientState.pName,
+                    pId: clientState.pId,
+                    yesQuestions: [...clientState.qAnswers.entries()].filter(([_, v]) => v).map(([k]) => k)
+                };
+            }
+
+            // Test 1: Correct fields in payload
+            const payload = generateQrPayload();
+            results.push(payload.gameId === "12345" && payload.pName === "Player 1" && payload.pId === "abcde" ? "PASS" : "FAIL");
+
+            // Test 2: yesQuestions only includes true answers
+            results.push(payload.yesQuestions.length === 1 && payload.yesQuestions[0] === "Question 1" ? "PASS" : "FAIL");
+
+            // Test 3: Payload can be decoded correctly
+            const encoded = LZString.compressToEncodedURIComponent(JSON.stringify(payload));
+            const decoded = JSON.parse(LZString.decompressFromEncodedURIComponent(encoded));
+            results.push(JSON.stringify(payload) === JSON.stringify(decoded) ? "PASS" : "FAIL");
+
+            document.getElementById("results").innerHTML = results.map((r, i) => `Test ${i + 1}: ${r}`).join("<br>");
+        }
+
+        testQrPayload();
+    </script>
+</body>
+</html>

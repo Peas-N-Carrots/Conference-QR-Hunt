@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Play Conference QR Scavenger Hunt</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <h1 id="header">Conference QR Scavenger Hunt</h1>
+    </header>
+
+    <main>
+        <!-- Tabs -->
+        <section id="tabs">
+            <button id="personal-button">Profile</button>
+            <button id="list-button">Hunt</button>
+        </section>
+
+        <!-- Profile Page -->
+        <section id="personal-page">
+            <div id="qr-container"></div>
+            <input
+                id="user-name-input"
+                type="text"
+                placeholder="Enter your full name"
+            />
+            <ul id="question-list">
+            </ul>
+        </section>
+
+        <!-- Hunt Page -->
+        <section id="list-page" hidden>
+            <ul id="check-list">
+            </ul>
+            <div id="qr-container"></div>
+        </section>
+
+        <!-- Completion State -->
+        <section id="completion-state" hidden>
+            <h1>Congratulations!</h1>
+            <p>You completed the scavenger hunt!</p>
+            <p id="completion-timestamp"></p>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="script.js"></script>
+</body>
+</html>

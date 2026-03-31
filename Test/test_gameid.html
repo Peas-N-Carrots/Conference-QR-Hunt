@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Game ID Compatibility</title>
+    <script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"></script>
+</head>
+<body>
+    <h1>Test Game ID Compatibility</h1>
+    <div id="results"></div>
+    <script>
+        function computeGameId(str) {
+            let hash = 5381;
+            for (let i = 0; i < str.length; i++) {
+                hash = (hash * 33) ^ str.charCodeAt(i);
+            }
+            return hash >>> 0;
+        }
+
+        function testGameIdCompatibility() {
+            const results = [];
+
+            // Test 1: Same inputs produce same gameId
+            const title = "Test Game";
+            const list = ["Question 1", "Question 2"];
+            const gameId1 = computeGameId(title + JSON.stringify(list));
+            const gameId2 = computeGameId(title + JSON.stringify(list));
+            results.push(gameId1 === gameId2 ? "PASS" : "FAIL");
+
+            // Test 2: Different inputs produce different gameId
+            const differentTitle = "Different Game";
+            const gameId3 = computeGameId(differentTitle + JSON.stringify(list));
+            results.push(gameId1 !== gameId3 ? "PASS" : "FAIL");
+
+            const differentList = ["Question 3", "Question 4"];
+            const gameId4 = computeGameId(title + JSON.stringify(differentList));
+            results.push(gameId1 !== gameId4 ? "PASS" : "FAIL");
+
+            document.getElementById("results").innerHTML = results.map((r, i) => `Test ${i + 1}: ${r}`).join("<br>");
+        }
+
+        testGameIdCompatibility();
+    </script>
+</body>
+</html>
