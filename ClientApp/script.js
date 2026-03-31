@@ -79,6 +79,7 @@ class clientGame {
     }
 
     isComplete() {
+        if (this.#qList.length === 0) return false;
         return this.#qList.every(question => this.#qFound.has(question));
     }
 
@@ -161,16 +162,15 @@ class clientGame {
         this.#hashState();
         return { success: true };
     }
+
+    setPlayerName(name) {
+        this.#pName = name;
+        this.#hashState();
+    }
 }
 
 const client = new clientGame();
-const scanner = new Html5QrcodeScanner('reader', {
-    qrbox: {
-        width: 250,
-        height: 250
-    },
-    fps: 20
-});
+const html5QrCode = new Html5Qrcode("reader");
 
 const personalButton = document.getElementById("personal-button");
 const listButton = document.getElementById("list-button");
@@ -179,13 +179,33 @@ const listPage = document.getElementById("list-page");
 const completionState = document.getElementById("completion-state");
 const completionTimestamp = document.getElementById("completion-timestamp");
 
+// Add module-level variables
+let profilePage = true;
+let activeQuestion = null;
+let completionTime = null;
+
+// Add event listener for Cancel button
+document.getElementById("cancel-button").addEventListener("click", () => {
+    activeQuestion = null;
+    html5QrCode.stop();
+    render();
+});
+
+// Update render() function
 function render() {
+    if (client.isComplete()) {
+        personalPage.hidden = true;
+        listPage.hidden = true;
+        completionState.hidden = false;
+        return;
+    }
+
     personalPage.hidden = !profilePage;
     listPage.hidden = profilePage;
-    completionState.hidden = !client.isComplete();
+    completionState.hidden = true;
 
-    if (client.isComplete()) {
-        completionTimestamp.textContent = `Completed at: ${new Date().toLocaleString()}`;
+    if (completionTime) {
+        completionTimestamp.textContent = `Completed at: ${completionTime}`;
     }
 
     // Render Profile tab
@@ -211,6 +231,13 @@ function render() {
         questionList.appendChild(li);
     });
 
+    const userNameInput = document.getElementById("user-name-input");
+    userNameInput.value = client.getPlayerName();
+
+    if (profilePage) {
+        client.genQR(document.getElementById("qr-container"));
+    }
+
     // Render Hunt tab
     const checkList = document.getElementById("check-list");
     checkList.innerHTML = "";
@@ -218,29 +245,66 @@ function render() {
         const li = document.createElement("li");
         const status = document.createElement("span");
         const found = client.getFound(question);
-        status.textContent = found ? "✓" : "○";
-        li.appendChild(status);
-        const text = document.createTextNode(` ${question} `);
-        li.appendChild(text);
-        if (!found) {
+        if (found) {
+            const uncheckButton = document.createElement("button");
+            uncheckButton.textContent = "✓ Uncheck";
+            uncheckButton.addEventListener("click", () => {
+                client.unsetAnswer(question);
+                render();
+            });
+            li.appendChild(uncheckButton);
+        } else {
+            status.textContent = "○";
+            li.appendChild(status);
             const scanButton = document.createElement("button");
             scanButton.textContent = "Scan";
             scanButton.addEventListener("click", () => {
-                scanner.render((decodedText) => {
-                    const payload = JSON.parse(LZString.decompressFromEncodedURIComponent(decodedText));
-                    const result = client.validateScan(payload, question);
-                    if (result.success) {
-                        alert("Scan successful!");
-                    } else {
-                        alert(`Scan failed: ${result.error}`);
+                activeQuestion = question;
+                html5QrCode.start(
+                    { facingMode: "environment" },
+                    { fps: 20, qrbox: { width: 250, height: 250 } },
+                    (decodedText) => {
+                        const payload = JSON.parse(LZString.decompressFromEncodedURIComponent(decodedText));
+                        const result = client.validateScan(payload, activeQuestion);
+                        if (result.success) {
+                            alert("Scan successful!");
+                            if (client.isComplete() && !completionTime) {
+                                completionTime = new Date().toLocaleString();
+                            }
+                        } else {
+                            alert(`Scan failed: ${result.error}`);
+                        }
+                        activeQuestion = null;
+                        html5QrCode.stop();
+                        render();
+                    },
+                    (errorMessage) => {
+                        console.warn(`QR Code scan error: ${errorMessage}`);
                     }
-                    render();
-                });
+                );
             });
             li.appendChild(scanButton);
         }
+        const text = document.createTextNode(` ${question} `);
+        li.appendChild(text);
         checkList.appendChild(li);
     });
+
+    // Show/hide Cancel button
+    const readerDiv = document.getElementById("reader");
+    const cancelButton = document.getElementById("cancel-button");
+    if (activeQuestion) {
+        readerDiv.hidden = false;
+        cancelButton.hidden = false;
+        cancelButton.addEventListener("click", () => {
+            activeQuestion = null;
+            html5QrCode.stop();
+            render();
+        });
+    } else {
+        readerDiv.hidden = true;
+        cancelButton.hidden = true;
+    }
 }
 
 personalButton.addEventListener("click", () => {
