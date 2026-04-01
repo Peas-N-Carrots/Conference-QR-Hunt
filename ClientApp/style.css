@@ -81,6 +81,22 @@ h2 {
     opacity: 0.6;
 }
 
+/* Style for Cancel Button */
+#cancel-button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#cancel-button:hover {
+    background-color: #c0392b;
+}
+
 /* Profile Page */
 /* #personal-page {
     display: none;

@@ -191,22 +191,21 @@ document.getElementById("cancel-button").addEventListener("click", () => {
     render();
 });
 
-// Update render() function
+// Reverting render() to the previous working version
 function render() {
     if (client.isComplete()) {
         personalPage.hidden = true;
         listPage.hidden = true;
         completionState.hidden = false;
+        if (completionTime) {
+            completionTimestamp.textContent = `Completed at: ${completionTime}`;
+        }
         return;
     }
 
     personalPage.hidden = !profilePage;
     listPage.hidden = profilePage;
     completionState.hidden = true;
-
-    if (completionTime) {
-        completionTimestamp.textContent = `Completed at: ${completionTime}`;
-    }
 
     // Render Profile tab
     const questionList = document.getElementById("question-list");
@@ -247,20 +246,21 @@ function render() {
         const found = client.getFound(question);
         if (found) {
             const uncheckButton = document.createElement("button");
-            uncheckButton.textContent = "✓ Uncheck";
+            uncheckButton.textContent = "\u2713 Uncheck";
             uncheckButton.addEventListener("click", () => {
                 client.unsetAnswer(question);
                 render();
             });
             li.appendChild(uncheckButton);
         } else {
-            status.textContent = "○";
+            status.textContent = "\u25cb";
             li.appendChild(status);
             const scanButton = document.createElement("button");
             scanButton.textContent = "Scan";
             scanButton.addEventListener("click", () => {
                 if (html5QrCode.isScanning) return;
                 activeQuestion = question;
+                render(); // FIX 1: Ensure render() is called before starting the scan
                 html5QrCode.start(
                     { facingMode: "environment" },
                     { fps: 20, qrbox: { width: 250, height: 250 } },
@@ -275,9 +275,10 @@ function render() {
                         } else {
                             alert(`Scan failed: ${result.error}`);
                         }
-                        activeQuestion = null;
-                        html5QrCode.stop();
-                        render();
+                        html5QrCode.stop().then(() => { // FIX 2: Await html5QrCode.stop()
+                            activeQuestion = null;
+                            render();
+                        });
                     },
                     (errorMessage) => {
                         console.warn(`QR Code scan error: ${errorMessage}`);
@@ -297,11 +298,6 @@ function render() {
     if (activeQuestion) {
         readerDiv.hidden = false;
         cancelButton.hidden = false;
-        // cancelButton.addEventListener("click", () => {
-        //     activeQuestion = null;
-        //     html5QrCode.stop();
-        //     render();
-        // });
     } else {
         readerDiv.hidden = true;
         cancelButton.hidden = true;
