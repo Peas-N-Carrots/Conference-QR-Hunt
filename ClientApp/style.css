@@ -82,14 +82,14 @@ h2 {
 }
 
 /* Profile Page */
-#personal-page {
+/* #personal-page {
     display: none;
-}
+} */
 
 /* Hunt Page */
-#list-page {
+/* #list-page {
     display: none;
-}
+} */
 
 /* Question List */
 #question-list, #check-list {
@@ -136,7 +136,7 @@ h2 {
 
 /* Completion State */
 #completion-state {
-    display: none;
+    /* display: none; */
     background-color: #27ae60;
     color: white;
     text-align: center;

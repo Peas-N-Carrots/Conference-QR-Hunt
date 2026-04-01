@@ -259,6 +259,7 @@ function render() {
             const scanButton = document.createElement("button");
             scanButton.textContent = "Scan";
             scanButton.addEventListener("click", () => {
+                if (html5QrCode.isScanning) return;
                 activeQuestion = question;
                 html5QrCode.start(
                     { facingMode: "environment" },
@@ -296,16 +297,20 @@ function render() {
     if (activeQuestion) {
         readerDiv.hidden = false;
         cancelButton.hidden = false;
-        cancelButton.addEventListener("click", () => {
-            activeQuestion = null;
-            html5QrCode.stop();
-            render();
-        });
+        // cancelButton.addEventListener("click", () => {
+        //     activeQuestion = null;
+        //     html5QrCode.stop();
+        //     render();
+        // });
     } else {
         readerDiv.hidden = true;
         cancelButton.hidden = true;
     }
 }
+
+document.getElementById("user-name-input").addEventListener("change", (e) => {
+    client.setPlayerName(e.target.value);
+});
 
 personalButton.addEventListener("click", () => {
     profilePage = true;
