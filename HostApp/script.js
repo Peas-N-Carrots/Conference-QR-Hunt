@@ -76,6 +76,7 @@ class hostGame {
      */
     #hashState() {
         const jsonString = JSON.stringify({
+            host: true, // Added host field to ensure state restoration
             title: this.#gName,
             list: this.#qList
         });

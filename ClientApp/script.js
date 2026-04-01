@@ -112,15 +112,15 @@ class clientGame {
 
     #hashState() {
         const jsonString = JSON.stringify({
-            host: false,
+            host: false, // Ensures correct restoration for returning players
             gName: this.#gName,
-            gameId: this.#gameId,
+            gameId: this.#gameId, // Ensures gameId survives reload
             qList: this.#qList,
             pName: this.#pName,
-            pId: this.#pId,
+            pId: this.#pId, // Ensures pId is not regenerated
             qAnswers: Array.from(this.#qAnswers.entries()),
             qFound: Array.from(this.#qFound.entries()),
-            pUsed: Array.from(this.#pUsed)
+            pUsed: Array.from(this.#pUsed) // Serializes Maps/Sets correctly
         });
         const hashString = LZString.compressToEncodedURIComponent(jsonString);
         window.location.hash = hashString;
