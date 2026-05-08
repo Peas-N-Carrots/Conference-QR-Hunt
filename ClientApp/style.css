@@ -48,14 +48,18 @@ h2 {
     font-size: 1.5rem;
 }
 
-/* Tabs */
+/* Tabs — nav strip, not a content card */
 #tabs {
     display: flex;
-    justify-content: space-around;
+    gap: 1rem;
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
     margin-bottom: 1.5rem;
 }
 
-#tabs button {
+/* Buttons — global, matching host */
+button {
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
     font-weight: 600;
@@ -67,50 +71,62 @@ h2 {
     transition: background-color 0.3s;
 }
 
-#tabs button:hover {
+button:hover {
     background-color: #2980b9;
 }
 
-#tabs button:active {
+button:active {
     transform: translateY(1px);
 }
 
-#tabs button:disabled {
+button:disabled {
     background-color: #95a5a6;
     cursor: not-allowed;
     opacity: 0.6;
 }
 
-/* Style for Cancel Button */
+button:disabled:hover {
+    background-color: #95a5a6;
+    transform: none;
+}
+
+/* Cancel button */
 #cancel-button {
     background-color: #e74c3c;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
+    margin-bottom: 1rem;
 }
 
 #cancel-button:hover {
     background-color: #c0392b;
 }
 
-/* Profile Page */
-/* #personal-page {
-    display: none;
-} */
+/* Name input section — matches host's game-name-section */
+#name-section {
+    background: transparent;
+    box-shadow: none;
+    padding: 1rem 0 0;
+    margin-bottom: 0;
+}
 
-/* Hunt Page */
-/* #list-page {
-    display: none;
-} */
+#user-name-input {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    transition: border-color 0.3s;
+}
 
-/* Question List */
+#user-name-input:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+/* Question/check lists */
 #question-list, #check-list {
     list-style: none;
     padding: 0;
+    margin-top: 1rem;
 }
 
 #question-list li, #check-list li {
@@ -119,8 +135,9 @@ h2 {
     margin-bottom: 0.75rem;
     border-radius: 4px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
+    gap: 0.75rem;
     transition: background-color 0.2s;
 }
 
@@ -128,19 +145,22 @@ h2 {
     background-color: #d5dbdb;
 }
 
-#question-list button, #check-list button {
+/* Scan / Uncheck buttons inside list items */
+#check-list button {
     background-color: #27ae60;
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
+    flex-shrink: 0;
 }
 
-#question-list button:hover, #check-list button:hover {
+#check-list button:hover {
     background-color: #229954;
 }
 
-/* QR Scanner */
+/* QR container */
 #qr-container {
-    margin-top: 2rem;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
     display: flex;
     justify-content: center;
 }
@@ -152,7 +172,6 @@ h2 {
 
 /* Completion State */
 #completion-state {
-    /* display: none; */
     background-color: #27ae60;
     color: white;
     text-align: center;
@@ -170,24 +189,26 @@ h2 {
     font-size: 1.2rem;
 }
 
-/* Mobile changes */
+/* Mobile */
 @media (max-width: 600px) {
-    #tabs {
-        flex-direction: column;
-        gap: 1rem;
+    #header {
+        font-size: 1.4rem;
     }
 
-    #tabs button {
+    #tabs {
+        flex-direction: column;
+    }
+
+    button {
         width: 100%;
     }
 
     #question-list li, #check-list li {
         flex-direction: column;
         align-items: flex-start;
-        gap: 0.75rem;
     }
 
-    #question-list button, #check-list button {
+    #check-list button {
         width: 100%;
     }
 }

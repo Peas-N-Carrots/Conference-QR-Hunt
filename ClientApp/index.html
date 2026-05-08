@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Play Conference QR Scavenger Hunt</title>
     <link rel="stylesheet" href="style.css" />
 </head>
@@ -21,21 +22,21 @@
         <!-- Profile Page -->
         <section id="personal-page">
             <div id="qr-container"></div>
-            <input
-                id="user-name-input"
-                type="text"
-                placeholder="Enter your full name"
-            />
-            <ul id="question-list">
-            </ul>
+            <section id="name-section">
+                <input
+                    id="user-name-input"
+                    type="text"
+                    placeholder="Enter your full name"
+                />
+            </section>
+            <ul id="question-list"></ul>
         </section>
 
         <!-- Hunt Page -->
         <section id="list-page" hidden>
             <div id="reader" hidden></div>
             <button id="cancel-button" hidden>Cancel</button>
-            <ul id="check-list">
-            </ul>
+            <ul id="check-list"></ul>
         </section>
 
         <!-- Completion State -->
