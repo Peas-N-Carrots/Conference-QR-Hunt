@@ -1,6 +1,6 @@
 /**
  * @file ClientApp/script.js
- * @author Joe Maloney
+ * @author Joe Maloney (used Github Copilot on the client app too)
  * Handles behavior related to joining/playing a game as well as the model
  * to link it to the HTML document.
 */
@@ -191,7 +191,7 @@ document.getElementById("cancel-button").addEventListener("click", () => {
     render();
 });
 
-// Reverting render() to the previous working version
+// Add items to the screen
 function render() {
     if (client.isComplete()) {
         personalPage.hidden = true;
