@@ -26,5 +26,16 @@ On the hunt tab, you will see another list of the same questions with the option
 
 Once a client checks off all boxes, they will have their screen locked with a timestamp of when they finished in order to break indicate exactly who finished first.
 
+## Credits
+I (Joe Maloney) originally designed and architected the app as part of some exploration/research into the design of non-network-based data sharing mentioned above. The scripts for the host app were hand coded, but for the sake of time, GitHub Copilot (I believe running GPT-4.0 or Claude Haiku 4.5) was used to write my test cases, model the client app based off of the host app, and complete the styling of the front end.
+
+The following libraries were used in the implementation:
+- [lz-string][3]: URL hashing (found on NPM)
+- [qrcode][4]: generating personal and game QR codes (found on NPM)
+- [html5-qrcode][5]: scanning personal QR codes (found on UNPKG)
+
 [1]: https://peas-n-carrots.github.io/Conference-QR-Hunt/HostApp/
 [2]: https://peas-n-carrots.github.io/Conference-QR-Hunt/ClientApp/
+[3]: https://www.npmjs.com/package/lz-string
+[4]: https://www.npmjs.com/package/qrcode
+[5]: https://app.unpkg.com/html5-qrcode
