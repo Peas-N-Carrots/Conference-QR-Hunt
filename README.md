@@ -14,7 +14,7 @@ Start here to try it out: [Host App][1]
 
 This video briefly explains how to use each app and summarizes the explaination below:
 
-<video src="Conference-QR-Hunt/qr_app_demo.mp4" width="1080" height="720" controls></video>
+<video src="qr_app_demo.mp4" width="320" height="240" controls></video>
 
 Start by opening the [Host App][1]. Type in a game name and add some personal yes/no questions to the game. Think of things that some but not all of your players might be able to answer yes to (e.g. "Have you been out of the country?" "Are you studying X major?") Make sure to hit the add button to confirm the question. There is an option to remove questions once you've added them if you make a mistake.
 
